@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secure Diagnostic</title><style>
+*{box-sizing:border-box}body{margin:0;background:#020305;color:#9fffc0;font:12px monospace;overflow:hidden}
+#app{padding:14px;max-width:1000px;margin:auto}.head{display:flex;justify-content:space-between;border-bottom:1px solid #18352a;padding:9px;color:#70ff9a}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}.card{background:#050b08;border:1px solid #163426;padding:11px}.label{color:#527765;font-size:9px}.value{font-size:16px;margin-top:5px}.ok{color:#63ff98}.warn{color:#ffd76a}
+h1{font-size:25px;margin:18px 0 3px}.sub{color:#557467}.terminal{height:54vh;border:1px solid #183b2b;background:#010302;padding:12px;overflow:hidden;box-shadow:inset 0 0 35px #00ff6610}.line{margin:3px 0}.cursor{display:inline-block;width:7px;height:13px;background:#70ff9a;animation:b .7s infinite}@keyframes b{50%{opacity:0}}
+.progress{height:6px;background:#0d1913;margin-top:10px}.fill{height:100%;width:0;background:#63ff98;box-shadow:0 0 12px #63ff98}
+#done{display:none;position:fixed;inset:0;background:#020305ee;align-items:center;justify-content:center;text-align:center}.box{border:1px solid #2d6848;padding:35px;width:min(500px,88vw);background:#050b08}.big{font-size:28px;color:#70ff9a}
+@media(max-width:650px){.grid{grid-template-columns:1fr 1fr}.grid .card:last-child{grid-column:1/3}}
+</style></head><body><div id="app">
+<div class="head"><span>SECURITY OPERATIONS / DIAGNOSTIC NODE</span><span id="time"></span></div>
+<h1>SECURE SESSION ANALYSIS</h1><div class="sub">Read-only integrity diagnostics • isolated simulation</div>
+<div class="grid"><div class="card"><div class="label">SESSION</div><div class="value ok">ENCRYPTED</div></div><div class="card"><div class="label">NETWORK</div><div class="value ok">MONITORED</div></div><div class="card"><div class="label">ACCESS</div><div class="value">READ-ONLY</div></div><div class="card"><div class="label">PROCESS MAP</div><div class="value ok">ACTIVE</div></div><div class="card"><div class="label">INTEGRITY</div><div class="value" id="integrity">VERIFYING</div></div><div class="card"><div class="label">DATA COLLECTION</div><div class="value ok">DISABLED</div></div></div>
+<div class="terminal" id="term"></div><div class="progress"><div class="fill" id="fill"></div></div>
+</div><div id="done"><div class="box"><div class="big">DIAGNOSTIC COMPLETE</div><p>Security integrity simulation finished.</p><p class="ok">No device changes were performed.</p></div></div>
+<script>
+const lines=['[BOOT] Loading diagnostic kernel...','[AUTH] Creating temporary session token...','[NET ] Inspecting interface state...','[TLS ] Verifying encrypted transport...','[PROC] Mapping runtime process signatures...','[MEM ] Running integrity consistency check...','[CFG ] Comparing security configuration...','[IO  ] Checking peripheral status...','[LOG ] Reviewing diagnostic event stream...','[SCAN] Performing final verification...','[CORE] Calculating integrity status...','[DONE] Closing diagnostic session...'];
+let i=0,p=0,term=document.getElementById('term'),fill=document.getElementById('fill');
+function beep(f=180,d=.045){try{let c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.value=f;g.gain.value=.012;o.connect(g);g.connect(c.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.stop(c.currentTime+d)}catch(e){}}
+function run(){if(i<lines.length){let x=document.createElement('div');x.className='line';x.innerHTML='<span class="ok">></span> '+lines[i];term.appendChild(x);term.scrollTop=term.scrollHeight;beep(150+i*17);i++;p=Math.min(100,p+7+Math.random()*7);fill.style.width=p+'%';if(i==10)document.getElementById('integrity').textContent='CHECKING';setTimeout(run,480)}else{document.getElementById('integrity').textContent='VERIFIED';setTimeout(()=>document.getElementById('done').style.display='flex',900)}}
+function clock(){document.getElementById('time').textContent=new Date().toLocaleTimeString()}setInterval(clock,1000);clock();setTimeout(run,300);
+</script></body></html>
